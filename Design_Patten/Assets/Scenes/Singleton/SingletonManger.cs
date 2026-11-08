@@ -1,70 +1,68 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class SinglePatten : MonoBehaviour
+// MonoBehaviour ì‹±ê¸€í†¤: ì”¬ì— í•˜ë‚˜ë§Œ ì¡´ì¬í•˜ê³ , ì”¬ì´ ë°”ë€Œì–´ë„ ìœ ì§€ëœë‹¤.
+// UnityëŠ” MonoBehaviour í´ë˜ìŠ¤ ì´ë¦„ê³¼ íŒŒì¼ ì´ë¦„ì´ ê°™ì•„ì•¼ ì»´í¬ë„ŒíŠ¸ë¡œ ë¶™ì¼ ìˆ˜ ìˆìœ¼ë¯€ë¡œ íŒŒì¼ëª…(SingletonManger)ê³¼ ë§ì·„ë‹¤.
+public class SingletonManger : MonoBehaviour
 {
-    //°ÔÀÓ¸Å´ÏÀúÀÇ ÀÎ½ºÅÏ½º¸¦ ´ã´Â Àü¿ªº¯¼ö(static º¯¼öÀÌÁö¸¸ ÀÌÇØÇÏ±â ½±°Ô Àü¿ªº¯¼ö¶ó°í ÇÏ°Ú´Ù).
-    //ÀÌ °ÔÀÓ ³»¿¡¼­ °ÔÀÓ¸Å´ÏÀú ÀÎ½ºÅÏ½º´Â ÀÌ instance¿¡ ´ã±ä ³à¼®¸¸ Á¸ÀçÇÏ°Ô ÇÒ °ÍÀÌ´Ù.
-    //º¸¾ÈÀ» À§ÇØ privateÀ¸·Î.
-    private static SinglePatten instance = null;
+    // ê²Œì„ë§¤ë‹ˆì €ì˜ ì¸ìŠ¤í„´ìŠ¤ë¥¼ ë‹´ëŠ” ì „ì—­ë³€ìˆ˜(static ë³€ìˆ˜ì´ì§€ë§Œ ì´í•´í•˜ê¸° ì‰½ê²Œ ì „ì—­ë³€ìˆ˜ë¼ê³  í•˜ê² ë‹¤).
+    // ì´ ê²Œì„ ë‚´ì—ì„œ ê²Œì„ë§¤ë‹ˆì € ì¸ìŠ¤í„´ìŠ¤ëŠ” ì´ instanceì— ë‹´ê¸´ ë…€ì„ë§Œ ì¡´ì¬í•˜ê²Œ í•  ê²ƒì´ë‹¤.
+    // ë³´ì•ˆì„ ìœ„í•´ privateìœ¼ë¡œ.
+    private static SingletonManger instance = null;
+
+    public bool IsPaused { get; private set; }
 
     void Awake()
     {
         if (null == instance)
         {
-            //ÀÌ Å¬·¡½º ÀÎ½ºÅÏ½º°¡ Åº»ıÇßÀ» ¶§ Àü¿ªº¯¼ö instance¿¡ °ÔÀÓ¸Å´ÏÀú ÀÎ½ºÅÏ½º°¡ ´ã°ÜÀÖÁö ¾Ê´Ù¸é, ÀÚ½ÅÀ» ³Ö¾îÁØ´Ù.
+            // ì´ í´ë˜ìŠ¤ ì¸ìŠ¤í„´ìŠ¤ê°€ íƒ„ìƒí–ˆì„ ë•Œ ì „ì—­ë³€ìˆ˜ instanceì— ê²Œì„ë§¤ë‹ˆì € ì¸ìŠ¤í„´ìŠ¤ê°€ ë‹´ê²¨ìˆì§€ ì•Šë‹¤ë©´, ìì‹ ì„ ë„£ì–´ì¤€ë‹¤.
             instance = this;
 
-            //¾À ÀüÈ¯ÀÌ µÇ´õ¶óµµ ÆÄ±«µÇÁö ¾Ê°Ô ÇÑ´Ù.
-            //gameObject¸¸À¸·Îµµ ÀÌ ½ºÅ©¸³Æ®°¡ ÄÄÆ÷³ÍÆ®·Î¼­ ºÙ¾îÀÖ´Â Hierarchy»óÀÇ °ÔÀÓ¿ÀºêÁ§Æ®¶ó´Â ¶æÀÌÁö¸¸, 
-            //³ª´Â Çò°¥¸² ¹æÁö¸¦ À§ÇØ this¸¦ ºÙ¿©ÁÖ±âµµ ÇÑ´Ù.
+            // ì”¬ ì „í™˜ì´ ë˜ë”ë¼ë„ íŒŒê´´ë˜ì§€ ì•Šê²Œ í•œë‹¤.
             DontDestroyOnLoad(this.gameObject);
         }
         else
         {
-            //¸¸¾à ¾À ÀÌµ¿ÀÌ µÇ¾ú´Âµ¥ ±× ¾À¿¡µµ Hierarchy¿¡ GameMgrÀÌ Á¸ÀçÇÒ ¼öµµ ÀÖ´Ù.
-            //±×·² °æ¿ì¿£ ÀÌÀü ¾À¿¡¼­ »ç¿ëÇÏ´ø ÀÎ½ºÅÏ½º¸¦ °è¼Ó »ç¿ëÇØÁÖ´Â °æ¿ì°¡ ¸¹Àº °Í °°´Ù.
-            //±×·¡¼­ ÀÌ¹Ì Àü¿ªº¯¼öÀÎ instance¿¡ ÀÎ½ºÅÏ½º°¡ Á¸ÀçÇÑ´Ù¸é ÀÚ½Å(»õ·Î¿î ¾ÀÀÇ GameMgr)À» »èÁ¦ÇØÁØ´Ù.
+            // ì”¬ ì´ë™ í›„ ê·¸ ì”¬ì—ë„ ë§¤ë‹ˆì €ê°€ ìˆìœ¼ë©´ ì´ì „ ì”¬ì˜ ì¸ìŠ¤í„´ìŠ¤ë¥¼ ê³„ì† ì“°ê³ , ìƒˆë¡œ ìƒê¸´ ìì‹ ì€ ì‚­ì œí•œë‹¤.
             Destroy(this.gameObject);
         }
     }
 
-    //°ÔÀÓ ¸Å´ÏÀú ÀÎ½ºÅÏ½º¿¡ Á¢±ÙÇÒ ¼ö ÀÖ´Â ÇÁ·ÎÆÛÆ¼. staticÀÌ¹Ç·Î ´Ù¸¥ Å¬·¡½º¿¡¼­ ¸¾²¯ È£ÃâÇÒ ¼ö ÀÖ´Ù.
-    public static SinglePatten Instance
+    void OnDestroy()
     {
-        get
-        {
-            if (null == instance)
-            {
-                return null;
-            }
-            return instance;
-        }
+        if (instance == this) instance = null;
+    }
+
+    // ê²Œì„ ë§¤ë‹ˆì € ì¸ìŠ¤í„´ìŠ¤ì— ì ‘ê·¼í•  ìˆ˜ ìˆëŠ” í”„ë¡œí¼í‹°. ì”¬ì— ë§¤ë‹ˆì €ê°€ ì—†ìœ¼ë©´ null.
+    public static SingletonManger Instance
+    {
+        get { return instance; }
     }
 
     public void InitGame()
     {
-
+        ContinueGame();
     }
 
     public void PauseGame()
     {
-
+        IsPaused = true;
+        Time.timeScale = 0f;
     }
 
     public void ContinueGame()
     {
-
+        IsPaused = false;
+        Time.timeScale = 1f;
     }
 
     public void RestartGame()
     {
-
+        InitGame();
     }
 
     public void StopGame()
     {
-
+        PauseGame();
     }
 }

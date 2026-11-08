@@ -1,65 +1,56 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SingletonUI : MonoBehaviour
 {
-    //pause ¹öÆ°À» ´©¸£¸é °ÔÀÓ ÀÏ½ÃÁ¤Áö
+    // pause ë²„íŠ¼ì„ ëˆ„ë¥´ë©´ ê²Œì„ ì¼ì‹œì •ì§€ (ë‹¤ì‹œ ëˆ„ë¥´ë©´ ì¬ê°œ)
     public void OnClickBtnPause()
     {
-        SinglePatten.Instance.PauseGame();
-        GameMgr.Instance.PauseGame();
+        var manager = SingletonManger.Instance;
+        if (manager == null)
+        {
+            Debug.LogWarning("ì”¬ì— SingletonMangerê°€ ì—†ìŠµë‹ˆë‹¤. ë¹ˆ ì˜¤ë¸Œì íŠ¸ì— SingletonMangerë¥¼ ë¶™ì´ì„¸ìš”.");
+        }
+        else if (manager.IsPaused)
+        {
+            manager.ContinueGame();
+        }
+        else
+        {
+            manager.PauseGame();
+        }
+
+        // MonoBehaviourê°€ ì•„ë‹Œ ì¼ë°˜ í´ë˜ìŠ¤ ì‹±ê¸€í†¤ë„ ê°™ì€ ë°©ì‹ìœ¼ë¡œ í˜¸ì¶œí•  ìˆ˜ ìˆë‹¤.
+        GameMgr.Instance.TogglePause();
     }
 }
+
+// ì¼ë°˜ C# í´ë˜ìŠ¤ ì‹±ê¸€í†¤: ì²˜ìŒ ì ‘ê·¼í•  ë•Œ ë§Œë“¤ì–´ì§„ë‹¤(ì§€ì—° ìƒì„±). ì”¬ì— ì˜¤ë¸Œì íŠ¸ê°€ í•„ìš” ì—†ë‹¤.
 public class GameMgr
 {
-    //°ÔÀÓ¸Å´ÏÀúÀÇ ÀÎ½ºÅÏ½º¸¦ ´ã´Â Àü¿ªº¯¼ö(static º¯¼öÀÌÁö¸¸ ÀÌÇØÇÏ±â ½±°Ô Àü¿ªº¯¼ö¶ó°í ÇÏ°Ú´Ù).
-    //ÀÌ °ÔÀÓ ³»¿¡¼­ °ÔÀÓ¸Å´ÏÀú ÀÎ½ºÅÏ½º´Â ÀÌ instance¿¡ ´ã±ä ³à¼®¸¸ Á¸ÀçÇÏ°Ô ÇÒ °ÍÀÌ´Ù.
-    //º¸¾ÈÀ» À§ÇØ privateÀ¸·Î.
+    // ê²Œì„ë§¤ë‹ˆì €ì˜ ì¸ìŠ¤í„´ìŠ¤ë¥¼ ë‹´ëŠ” ì „ì—­ë³€ìˆ˜
     private static GameMgr instance;
 
-    //°ÔÀÓ ¸Å´ÏÀú ÀÎ½ºÅÏ½º¿¡ Á¢±ÙÇÒ ¼ö ÀÖ´Â ÇÁ·ÎÆÛÆ¼. staticÀÌ¹Ç·Î ´Ù¸¥ Å¬·¡½º¿¡¼­ ¸¾²¯ È£ÃâÇÒ ¼ö ÀÖ´Ù.
+    // ê²Œì„ ë§¤ë‹ˆì € ì¸ìŠ¤í„´ìŠ¤ì— ì ‘ê·¼í•  ìˆ˜ ìˆëŠ” í”„ë¡œí¼í‹°. staticì´ë¯€ë¡œ ë‹¤ë¥¸ í´ë˜ìŠ¤ì—ì„œ ë§˜ê» í˜¸ì¶œí•  ìˆ˜ ìˆë‹¤.
     public static GameMgr Instance
     {
         get
         {
-            if (null == instance)
-            {
-                //°ÔÀÓ ÀÎ½ºÅÏ½º°¡ ¾ø´Ù¸é ÇÏ³ª »ı¼ºÇØ¼­ ³Ö¾îÁØ´Ù.
-                instance = new GameMgr();
-            }
+            // ê²Œì„ ì¸ìŠ¤í„´ìŠ¤ê°€ ì—†ë‹¤ë©´ í•˜ë‚˜ ìƒì„±í•´ì„œ ë„£ì–´ì¤€ë‹¤.
+            if (null == instance) instance = new GameMgr();
             return instance;
         }
     }
 
-    //»ı¼ºÀÚ¸¦ ÇÏ³ª ¸¸µé¾îÁà¼­ ¿øÇÏ´Â ¼¼ÆÃÀ» ÇØÁÖ¸é ÁÁ´Ù.
-    public GameMgr()
-    {
+    // ì™¸ë¶€ì—ì„œ newë¡œ ë§Œë“¤ì§€ ëª»í•˜ê²Œ private ìƒì„±ì
+    private GameMgr() { }
 
-    }
+    public bool IsPaused { get; private set; }
+    public int RestartCount { get; private set; }
 
-    public void InitGame()
-    {
-
-    }
-
-    public void PauseGame()
-    {
-
-    }
-
-    public void ContinueGame()
-    {
-
-    }
-
-    public void RestartGame()
-    {
-
-    }
-
-    public void StopGame()
-    {
-
-    }
+    public void InitGame() { IsPaused = false; }
+    public void PauseGame() { IsPaused = true; }
+    public void ContinueGame() { IsPaused = false; }
+    public void TogglePause() { IsPaused = !IsPaused; }
+    public void RestartGame() { RestartCount++; InitGame(); }
+    public void StopGame() { IsPaused = true; }
 }
